@@ -13,7 +13,7 @@ import FAQ from './components/FAQ/FAQ';
 import Footer from './components/Footer/Footer';
 import FloatingCart from './components/FloatingCart/FloatingCart';
 import CartPage from './components/CartPage/CartPage';
-
+import PurchaseFlow from './components/PurchaseFlow/PurchaseFlow'; // Importa el nuevo componente
 
 // Componente para la página de inicio que agrupa las secciones
 const HomePage = () => (
@@ -21,6 +21,7 @@ const HomePage = () => (
     <HeroProduct />
     <ProductDetails />
     <SensorDetailsSection />
+    <PurchaseFlow /> {/* Agrega la nueva sección aquí */}
     <MembershipPrograms />
     <ProblemSolver />
     <FAQ />
