@@ -8,6 +8,7 @@ import HeroProduct from './components/HeroProduct/HeroProduct';
 import ProductDetails from './components/ProductDetails/ProductDetails';
 import SensorDetailsSection from './components/SensorDetailsSection/SensorDetailsSection';
 import MembershipPrograms from './components/MembershipPrograms/MembershipPrograms';
+import { ContactForm } from './components/ContactForm/ContactForm.jsx';
 import ProblemSolver from './components/ProblemSolver/ProblemSolver';
 import FAQ from './components/FAQ/FAQ';
 import Footer from './components/Footer/Footer';
@@ -22,9 +23,10 @@ const HomePage = () => (
     <ProductDetails />
     <SensorDetailsSection />
     <PurchaseFlow /> {/* Agrega la nueva sección aquí */}
-    <MembershipPrograms />
     <ProblemSolver />
     <FAQ />
+    <ContactForm />
+
   </>
 );
 

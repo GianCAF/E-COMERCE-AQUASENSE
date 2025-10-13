@@ -24,7 +24,7 @@ const SensorDetailsSection = () => {
         {
             id: 3,
             name: 'Sensor de Conductividad',
-            image: '/assets/sensor-images/conductivity-sensor.jpg',
+            image: '/public/imagenes/sensor-ph.png',
             description: 'Mide la capacidad del agua para conducir electricidad, relacionado con la concentración de sales.',
             longDescription: 'Nuestro sensor de conductividad mide los sólidos disueltos totales (TDS) y la conductividad eléctrica del agua. Crucial para monitorear la calidad del agua potable o para procesos industriales. Rango de medición: 0-2000 µS/cm, Precisión: ±2% F.S.',
         },

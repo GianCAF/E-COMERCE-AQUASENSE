@@ -20,7 +20,8 @@ const Header = () => {
                     <Nav className="mx-auto">
                         <Nav.Link href="#product-info">Producto</Nav.Link>
                         <Nav.Link href="#sensors">Sensores</Nav.Link>
-                        <Nav.Link href="#memberships">Membresías</Nav.Link>
+                        <Nav.Link href="#purchase-flow">Membresías</Nav.Link>
+                        <Nav.Link href="#contacto">Contacto</Nav.Link>
                         <Nav.Link href="#faq">FAQ</Nav.Link>
                     </Nav>
                     <Button variant="outline-primary" href="/login">Soy Cliente</Button>
