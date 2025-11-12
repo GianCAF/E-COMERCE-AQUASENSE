@@ -2,6 +2,11 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Image } from 'react-bootstrap';
 
+// Importa la imagen que ya te funciona
+import sensorPH from '../../../src/assets/sensor-ph.png';
+import sensorConductividad from '../../../src/assets/sensor-conductividad.jpg';
+import sensorTurbidez from '../../../src/assets/sensor-turbidez.jpg';
+
 const SensorDetailsSection = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedSensor, setSelectedSensor] = useState(null);
@@ -10,21 +15,21 @@ const SensorDetailsSection = () => {
         {
             id: 1,
             name: 'Sensor de pH',
-            image: '/assets/sensor-images/ph-sensor.jpg',
+            image: sensorPH,
             description: 'Mide la acidez o alcalinidad del agua, esencial para la salud de acuarios y cultivos.',
             longDescription: 'Nuestro sensor de pH de alta precisión utiliza tecnología de electrodo de vidrio para proporcionar lecturas exactas y estables. Calibración sencilla y larga vida útil. Rango de medición: 0-14 pH, Precisión: ±0.01 pH.',
         },
         {
             id: 2,
             name: 'Sensor de Turbidez',
-            image: '/assets/sensor-images/turbidity-sensor.jpg',
+            image: sensorTurbidez,
             description: 'Detecta la claridad del agua, indicando la presencia de partículas suspendidas.',
             longDescription: 'El sensor de turbidez AquaSense utiliza un método óptico para determinar la cantidad de partículas suspendidas en el agua. Ideal para identificar contaminación o sedimento. Rango de medición: 0-1000 NTU, Resolución: 1 NTU.',
         },
         {
             id: 3,
             name: 'Sensor de Conductividad',
-            image: '/public/imagenes/sensor-ph.png',
+            image: sensorConductividad,
             description: 'Mide la capacidad del agua para conducir electricidad, relacionado con la concentración de sales.',
             longDescription: 'Nuestro sensor de conductividad mide los sólidos disueltos totales (TDS) y la conductividad eléctrica del agua. Crucial para monitorear la calidad del agua potable o para procesos industriales. Rango de medición: 0-2000 µS/cm, Precisión: ±2% F.S.',
         },

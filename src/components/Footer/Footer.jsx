@@ -19,8 +19,8 @@ const Footer = () => {
                     <Col md={2} className="mb-3 mb-md-0">
                         <h5>Ayuda</h5>
                         <Nav className="flex-column">
-                            <Nav.Link href="#" className="text-white-50">Centro de Ayuda</Nav.Link>
-                            <Nav.Link href="#" className="text-white-50">Envíos y Entregas</Nav.Link>
+                            <Nav.Link href="#faq" className="text-white-50">Centro de Ayuda</Nav.Link>
+                            <Nav.Link href="#product-info" className="text-white-50">Envíos y Entregas</Nav.Link>
                             <Nav.Link href="#" className="text-white-50">Devoluciones</Nav.Link>
                         </Nav>
                     </Col>
@@ -29,16 +29,16 @@ const Footer = () => {
                         <Nav className="flex-column">
                             <Nav.Link href="#" className="text-white-50">Términos y Condiciones</Nav.Link>
                             <Nav.Link href="#" className="text-white-50">Política de Privacidad</Nav.Link>
-                            <Nav.Link href="#" className="text-white-50">Aviso Legal</Nav.Link>
+                            <Nav.Link href="#product-info" className="text-white-50">Métodos de pago</Nav.Link>
                         </Nav>
                     </Col>
-                    <Col md={3}>
+                    {/**  <Col md={3}>
                         <h5>Contacto</h5>
                         <Nav className="flex-column">
                             <Nav.Link href="#" className="text-white-50">Contáctanos</Nav.Link>
                             <Nav.Link href="#" className="text-white-50">Trabaja con nosotros</Nav.Link>
                         </Nav>
-                    </Col>
+                    </Col> */}
                 </Row>
                 <Row className="mt-4 border-top border-secondary pt-3">
                     <Col className="text-center text-muted small">

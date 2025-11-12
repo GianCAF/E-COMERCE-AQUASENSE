@@ -2,20 +2,31 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, ListGroup, Button, Image, Badge } from 'react-bootstrap';
 import { useCart } from '../../context/CartContext';
+import ReviewsSection from '../ReviewsSection/ReviewsSection'; // Importar el componente de reseñas dinámicas
+
+// --- TUS IMPORTACIONES DE IMÁGENES ---
+import imagen1 from '../../imgcar/imagen1.jpg';
+import imagen2 from '../../imgcar/imag2.jpg';
+import imagen3 from '../../imgcar/img3.jpg';
+import imagen4 from '../../imgcar/img4.jpg';
+import visa from '../../imgcar/visa.png';
+import master from '../../imgcar/mastercad.png';
 
 const ProductDetails = () => {
     const { addToCart } = useCart();
 
     const productData = {
-        // Es crucial que el producto tenga un 'id' único
+        // Datos del producto
         id: 'aquasense-monitor-123',
         name: 'AquaSense - Monitor de Calidad de Agua Inteligente',
-        price: 999.99,
-        discount: '12 meses sin intereses',
-        deliveryTime: 'Llega gratis mañana',
+        price: 22390.00, // Ajuste de precio a formato flotante para el carrito
+        discount: ' Hasta 12 meses sin intereses',
+        deliveryTime: 'Llega en una o dos semanas',
         stock: 25,
         seller: 'AquaSense Oficial',
         sellerLink: '#',
+        rating: 4.5, // Se mantiene para mostrar en la info principal
+        reviewsCount: 37, // Se mantiene para mostrar en la info principal
         description: `El AquaSense es la solución definitiva para el monitoreo de la calidad del agua. Con un diseño robusto y sensores de alta precisión (pH, Turbidez, Conductividad), te permite tener control total sobre tu fuente de agua en tiempo real.`,
         features: [
             'Monitoreo en tiempo real de pH, Turbidez y Conductividad',
@@ -27,27 +38,33 @@ const ProductDetails = () => {
         ],
         specs: [
             { label: 'Sensores incluidos', value: 'pH, Turbidez, Conductividad' },
-            { label: 'Conectividad', value: 'Wi-Fi 2.4GHz' },
+            { label: 'Conectividad', value: 'Wi-Fi 2.4GHz 4G' },
             { label: 'Material', value: 'Plástico ABS de alta resistencia' },
             { label: 'Batería', value: 'Ion-Litio 3000mAh' },
             { label: 'Dimensiones', value: '15cm x 10cm x 5cm' },
         ],
-        reviews: [
-            { author: 'Juan P.', rating: 5, comment: '¡Excelente producto! Muy fácil de usar y la precisión es increíble. Ahora sé exactamente qué pasa con mi agua.', date: '2023-10-26' },
-            { author: 'Maria G.', rating: 4, comment: 'Funciona muy bien, aunque la app podría mejorar en diseño. Aun así, cumple su función perfectamente.', date: '2023-10-20' },
-        ]
     };
 
-    const [mainImage, setMainImage] = useState('/assets/product-images/aquasense-main.jpg');
+    // --- ESTADOS PARA GALERÍA Y ZOOM ---
+    const [mainImage, setMainImage] = useState(imagen1);
+    const [zoomStyle, setZoomStyle] = useState({});
+
     const productImages = [
-        { src: '/assets/product-images/aquasense-main.jpg', alt: 'AquaSense Main' },
-        { src: '/assets/product-images/aquasense-sensor1.jpg', alt: 'AquaSense Sensor 1' },
-        { src: '/assets/product-images/aquasense-display.jpg', alt: 'AquaSense Display' },
-        { src: '/assets/product-images/aquasense-packaging.jpg', alt: 'AquaSense Packaging' },
+        { src: imagen1 },
+        { src: imagen2 },
+        { src: imagen3 },
+        { src: imagen4 },
+    ];
+
+    const mediosImage = [
+        { src: visa },
+        { src: master }
     ];
 
     const handleThumbnailClick = (imageSrc) => {
         setMainImage(imageSrc);
+        // Resetea el zoom al cambiar de imagen
+        setZoomStyle({});
     };
 
     const handleAddToCart = () => {
@@ -55,23 +72,91 @@ const ProductDetails = () => {
         alert(`${productData.name} ha sido agregado al carrito.`);
     };
 
+    const renderStars = (rating) => {
+        const fullStar = '★'.repeat(Math.floor(rating));
+        const emptyStar = '☆'.repeat(5 - Math.floor(rating));
+        return <span className="text-warning">{fullStar}{emptyStar}</span>;
+    };
+
+
+    // --- LÓGICA DEL ZOOM (Implementada tal como la proporcionaste) ---
+    const handleMouseMove = (e) => {
+        if (window.innerWidth < 768) return;
+
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+
+        const x = (e.clientX - left) / width;
+        const y = (e.clientY - top) / height;
+
+        const zoomFactor = 2;
+
+        // Calcula el desplazamiento
+        const translateX = -(x * 100 * zoomFactor - x * 100);
+        const translateY = -(y * 100 * zoomFactor - y * 100);
+
+        setZoomStyle({
+            transform: `scale(${zoomFactor}) translate(${translateX / zoomFactor}%, ${translateY / zoomFactor}%)`,
+            transition: 'transform 0.1s ease-out',
+            transformOrigin: '0 0',
+            width: `${100 / zoomFactor * 100}%`,
+            height: `${100 / zoomFactor * 100}%`,
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setZoomStyle({});
+    };
+    // ------------------------------------------------------------------
+
     return (
         <Container className="my-5" id="product-info">
             <Row>
-                {/* Columna de Imágenes */}
+                {/* Columna de Imágenes y Miniaturas */}
                 <Col md={5}>
-                    <div className="position-relative">
-                        <Image src={mainImage} fluid className="border shadow-sm mb-3" />
+
+                    {/* Contenedor principal de la imagen: ZOOM AREA */}
+                    <div
+                        className="position-relative d-flex justify-content-center align-items-center border shadow-sm mb-3"
+                        style={{ height: '400px', overflow: 'hidden', cursor: 'zoom-in' }}
+                        onMouseMove={handleMouseMove}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        {/* Imagen principal: Aplica el zoomStyle para la lupa */}
+                        <Image
+                            src={mainImage}
+                            alt={productData.name}
+                            style={{
+                                objectFit: 'contain',
+                                maxHeight: '100%',
+                                maxWidth: '100%',
+                                ...zoomStyle, // Aplica los estilos de zoom
+                            }}
+                        />
                     </div>
+
+                    {/* Miniaturas */}
                     <div className="d-flex overflow-auto" style={{ maxWidth: '100%' }}>
                         {productImages.map((img, index) => (
                             <div
                                 key={index}
-                                className={`thumbnail-wrapper me-2 mb-2 border ${mainImage === img.src ? 'border-primary' : ''}`}
+                                className={`thumbnail-wrapper me-2 border ${mainImage === img.src ? 'border-primary border-3' : ''}`}
                                 onClick={() => handleThumbnailClick(img.src)}
-                                style={{ width: '80px', height: '80px', cursor: 'pointer', flexShrink: 0 }}
+                                style={{
+                                    width: '90px',
+                                    height: '90px',
+                                    cursor: 'pointer',
+                                    flexShrink: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '5px'
+                                }}
                             >
-                                <Image src={img.src} thumbnail />
+                                <Image
+                                    src={img.src}
+                                    thumbnail
+                                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                />
                             </div>
                         ))}
                     </div>
@@ -81,11 +166,10 @@ const ProductDetails = () => {
                 <Col md={4}>
                     <h1 className="mb-2">{productData.name}</h1>
                     <div className="d-flex align-items-center mb-3">
-                        <div className="text-warning me-2">
-                            {'★'.repeat(Math.floor(productData.rating))}
-                            {'☆'.repeat(5 - Math.floor(productData.rating))}
+                        {/* <div className="text-warning me-2">
+                            {renderStars(productData.rating)}
                         </div>
-                        <span>({productData.reviewsCount} calificaciones)</span>
+                         <span>({productData.reviewsCount} calificaciones)</span> */}
                     </div>
 
                     <h2 className="text-primary my-3">${productData.price.toFixed(2)} MXN</h2>
@@ -144,8 +228,9 @@ const ProductDetails = () => {
                         <Card.Body>
                             <Card.Title>Medios de Pago</Card.Title>
                             <div className="d-flex flex-wrap gap-2 mt-3">
-                                <Image src="/assets/payment-logos/visa-logo.png" height="25" alt="Visa" />
-                                <Image src="/assets/payment-logos/mastercard-logo.png" height="25" alt="Mastercard" />
+                                {/* Usando las variables importadas */}
+                                <Image src={visa} height="35px" alt="Visa" />
+                                <Image src={master} height="35px" alt="Mastercard" />
                             </div>
                             <Button variant="link" className="p-0 mt-3">Ver más medios de pago</Button>
                         </Card.Body>
@@ -178,39 +263,9 @@ const ProductDetails = () => {
                 </Col>
             </Row>
 
-            {/* Opiniones del Producto */}
-            <Row className="mt-4">
-                <Col md={12}>
-                    <h3 className="mb-3">Opiniones del producto</h3>
-                    <div className="d-flex align-items-center mb-3">
-                        <h4 className="me-2">{productData.rating}</h4>
-                        <div className="text-warning">
-                            {'★'.repeat(Math.floor(productData.rating))}
-                            {'☆'.repeat(5 - Math.floor(productData.rating))}
-                        </div>
-                        <span className="ms-2">({productData.reviewsCount} calificaciones)</span>
-                    </div>
+            {/* SECCIÓN DE RESEÑAS DINÁMICAS (Reemplaza a la sección estática) */}
+            <ReviewsSection productId={'aquasense-monitor-123'} />
 
-                    <h5 className="mt-4">Opiniones destacadas</h5>
-                    {productData.reviews.map((review, index) => (
-                        <Card key={index} className="mb-3 shadow-sm">
-                            <Card.Body>
-                                <div className="d-flex justify-content-between">
-                                    <h6 className="mb-1">{review.author}</h6>
-                                    <small className="text-muted">{review.date}</small>
-                                </div>
-                                <div className="text-warning mb-2">
-                                    {'★'.repeat(review.rating)}
-                                    {'☆'.repeat(5 - review.rating)}
-                                </div>
-                                <Card.Text>{review.comment}</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    ))}
-                    <Button variant="outline-secondary">Ver todas las opiniones</Button>
-                    <hr />
-                </Col>
-            </Row>
         </Container>
     );
 };
