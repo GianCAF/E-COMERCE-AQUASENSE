@@ -1,6 +1,5 @@
-// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'; // Agregamos useLocation
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Header from './components/Header/Header';
@@ -14,9 +13,24 @@ import FAQ from './components/FAQ/FAQ';
 import Footer from './components/Footer/Footer';
 import FloatingCart from './components/FloatingCart/FloatingCart';
 import CartPage from './components/CartPage/CartPage';
-import PurchaseFlow from './components/PurchaseFlow/PurchaseFlow'; // Importa el nuevo componente
+import PurchaseFlow from './components/PurchaseFlow/PurchaseFlow';
 import RutaMapa from './components/map/RutaMapa.jsx';
-import MonitoringPage from './components/MonitoringPage/MonitoringPage.jsx'; // ¡Importa el nuevo componente de graficacion!
+import MonitoringPage from './components/MonitoringPage/MonitoringPage.jsx';
+import { useAuth } from './context/AuthContext';
+
+// Componente de verificación de autenticación para proteger rutas
+const AuthWrapper = ({ element }) => {
+  const { currentUser } = useAuth();
+
+  // Si el usuario NO está logeado, redirige al home con un estado que indica abrir el modal.
+  if (!currentUser) {
+    // Redirigimos al home, enviando un 'state' para que el Header o HomePage lo capture
+    return <Navigate to="/" replace state={{ showLoginPrompt: true }} />;
+  }
+
+  // Si el usuario SÍ está logeado, permite el acceso al componente.
+  return element;
+};
 
 // Componente para la página de inicio que agrupa las secciones
 const HomePage = () => (
@@ -24,12 +38,11 @@ const HomePage = () => (
     <HeroProduct />
     <ProductDetails />
     <SensorDetailsSection />
-    <PurchaseFlow /> {/* Agrega la nueva sección aquí */}
+    <PurchaseFlow />
     <ProblemSolver />
     <RutaMapa />
     <FAQ />
     <ContactForm />
-
   </>
 );
 
@@ -39,11 +52,16 @@ function App() {
       <Header />
       <main>
         <Routes>
+          {/* Rutas Públicas */}
           <Route path="/" element={<HomePage />} />
           <Route path="/product-details" element={<ProductDetails />} />
           <Route path="/cart" element={<CartPage />} />
-          {/* Aquí puedes agregar más rutas para otras páginas */}
-          <Route path="/monitoreo" element={<MonitoringPage />} /> {/* Nueva ruta */}
+
+          {/* Ruta Protegida para Monitoreo */}
+          <Route
+            path="/monitoreo"
+            element={<AuthWrapper element={<MonitoringPage />} />}
+          />
 
         </Routes>
       </main>

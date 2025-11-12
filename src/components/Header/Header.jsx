@@ -1,28 +1,50 @@
-import React, { useState } from 'react';
-import { Navbar, Nav, Container, Button, NavDropdown } from 'react-bootstrap';
-import AuthModal from '../AuthModal/AuthModal'; // Importar el modal
-import { useAuth } from '../../context/AuthContext'; // Importar el contexto de auth
-import { Link } from 'react-router-dom'; // Asegúrate de importar Link
+import React, { useState, useEffect } from 'react';
+import { Navbar, Nav, Container, Button, NavDropdown, Modal } from 'react-bootstrap';
+import AuthModal from '../AuthModal/AuthModal';
+import { useAuth } from '../../context/AuthContext';
+import { Link, useLocation } from 'react-router-dom'; // Importamos useLocation
 
 const Header = () => {
     const [showModal, setShowModal] = useState(false);
-    const { currentUser, userData, logout } = useAuth(); // Usar el hook de autenticación
+    const [showAlertModal, setShowAlertModal] = useState(false); // Nuevo estado para el modal de alerta
+    const { currentUser, userData, logout } = useAuth();
+    const location = useLocation(); // Hook para obtener el estado de la navegación
 
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
+    const handleAlertClose = () => setShowAlertModal(false);
+
+    // Efecto para verificar si se requiere mostrar el prompt de login
+    useEffect(() => {
+        // Verifica si el estado de navegación contiene la bandera 'showLoginPrompt'
+        // y si el usuario realmente NO está logeado.
+        if (location.state && location.state.showLoginPrompt && !currentUser) {
+            setShowAlertModal(true); // Muestra el modal de alerta
+
+            // Importante: Limpiamos el estado de navegación para que la alerta no reaparezca al recargar
+            // Esto evita bucles de alerta al presionar F5.
+            window.history.replaceState({}, document.title, location.pathname);
+        }
+    }, [location.state, currentUser, location.pathname]);
 
     const handleLogout = async () => {
         try {
             await logout();
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
-            // Uso de console.error() en lugar de alert()
             console.error("Hubo un error al cerrar sesión.");
         }
     };
 
+    // Función que se ejecuta al hacer click en "Iniciar Sesión" desde el modal de alerta
+    const handleLoginClick = () => {
+        handleAlertClose(); // Cierra la alerta
+        handleShow(); // Abre el modal de login real (AuthModal)
+    };
+
     return (
         <>
+            {/* Navbar (se mantiene igual) */}
             <Navbar bg="light" expand="lg" className="shadow-sm sticky-top">
                 <Container>
                     <Navbar.Brand href="#home">
@@ -45,9 +67,8 @@ const Header = () => {
 
                         {/* Contenedor para el botón de Monitoreo y la autenticación */}
                         <div className="d-flex align-items-center">
-                            {/* BOTÓN DE MONITOREO CORREGIDO: to="/monitoreo" */}
                             <Link
-                                to="/monitoreo" // <-- RUTA DE URL CORREGIDA
+                                to="/monitoreo"
                                 className="btn btn-outline-info me-3"
                                 style={{ whiteSpace: 'nowrap' }}
                             >
@@ -77,8 +98,26 @@ const Header = () => {
                 </Container>
             </Navbar>
 
-            {/* El Modal de Login */}
+            {/* El Modal de Login real */}
             <AuthModal show={showModal} handleClose={handleClose} />
+
+            {/* NUEVO: Modal de Alerta de Acceso Requerido */}
+            <Modal show={showAlertModal} onHide={handleAlertClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title className="text-danger">Acceso Restringido</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p className="lead">Debes iniciar sesión para acceder al Dashboard de Monitoreo en Tiempo Real.</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleAlertClose}>
+                        Cerrar
+                    </Button>
+                    <Button variant="primary" onClick={handleLoginClick}>
+                        Iniciar Sesión
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 };
